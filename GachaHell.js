@@ -39,6 +39,8 @@ var starTotal=BigNumber.ZERO;
 var achievement1, achievement2;
 var chapter1, chapter2;
 
+quaternaryEntries = [];
+
 var init = () => {
     currency = theory.createCurrency();
 
@@ -207,6 +209,32 @@ var getSecondaryEquation = () => {
     return `⋆_t_o_t_a_l = ${starTotal}`;
   }
 var getTertiaryEquation = () => theory.latexSymbol + "=\\max\\rho";
+
+var getQuaternaryEntries = () => {
+    if (quaternaryEntries.length == 0)
+    {
+        quaternaryEntries.push(new QuaternaryEntry("⋆", null));
+        quaternaryEntries.push(new QuaternaryEntry("⋆⋆", null));
+        quaternaryEntries.push(new QuaternaryEntry("⋆⋆⋆", null));
+        quaternaryEntries.push(new QuaternaryEntry("⋆⋆⋆⋆", null));
+        quaternaryEntries.push(new QuaternaryEntry("⋆⋆⋆⋆⋆", null));
+        quaternaryEntries.push(new QuaternaryEntry("⋆⋆⋆⋆⋆⋆", null));
+        quaternaryEntries.push(new QuaternaryEntry("⋆_t_o_t_a_l", null));
+    }
+
+    quaternaryEntries[0].value = stars[0].toString();
+    quaternaryEntries[1].value = stars[1].toString();
+    quaternaryEntries[2].value = stars[2].toString();
+    quaternaryEntries[3].value = stars[3].toString();
+    quaternaryEntries[4].value = stars[4].toString();
+    quaternaryEntries[5].value = stars[5].toString();
+    quaternaryEntries[6].value = starTotal.toString();
+
+    return quaternaryEntries;
+}
+
+
+
 var getPublicationMultiplier = (tau) => tau.pow(0.164) / BigNumber.THREE;
 var getPublicationMultiplierFormula = (symbol) => "\\frac{{" + symbol + "}^{0.164}}{3}";
 var getTau = () => currency.value;
