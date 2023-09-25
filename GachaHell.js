@@ -17,14 +17,22 @@ import { StackOrientation } from "./api/ui/properties/StackOrientation";
 
 var id = "Gacha_Hell";
 var name = "Gacha Hell";
-var description = "A theory that exists to stave off the gacha crave many are unfortunately addicted too.";
+var description = "A theory that exists to stave off the gacha crave many are unfortunately addicted too. Partially inspired by the Probability Theory.";
 var authors = "Jacob1531";
 var version = 0.1;
+
+var stage=1;
 
 var time=0;
 var currency;
 var c1, c2;
 var c1Exp, c2Exp;
+
+//progress bar variable(s)
+var prgGacha = BigNumber.ZERO;
+
+var gacha = BigNumber.ZERO, gachaTotal = BigNumber.ZERO;
+var stars = [0, 0, 0, 0, 0, 0];
 
 var achievement1, achievement2;
 var chapter1, chapter2;
@@ -34,6 +42,16 @@ var init = () => {
 
     ///////////////////
     // Regular Upgrades
+
+    //t
+    {
+        let getDesc = () => Localization.getUpgradeIncCustomDesc("\\text{time}", "\\text{0.1s}");
+        let getInfo = () => Localization.getUpgradeIncCustomInfo("\\text{time}", "\\text{0.1s}");
+        clicker = theory.createUpgrade(5, currency, new FreeCost());
+        clicker.getDescription = (_) =>getDesc();
+        clicker.getInfo = (amount) => getInfo();
+        clicker.bought = (amount) => { prgGacha += .1 };
+    }
 
     // c1
     {
@@ -98,14 +116,89 @@ var tick = (elapsedTime, multiplier) => {
     let bonus = theory.publicationMultiplier;
     currency.value += dt * bonus * getC1(c1.level).pow(getC1Exponent(c1Exp.level)) *
                                    getC2(c2.level).pow(getC2Exponent(c2Exp.level));
+    
+    let spd=1;//some other multiplier here soon
+    prgGacha += dt * spd;
+    if (prgGacha >= 1) {
+        gacha += prgGacha.floor();
+        gachaTotal += prgGacha.floor();
+        prgGacha -= prgGacha.floor();
+        //theory.invalidatePrimaryEquation();
+        //theory.invalidateSecondaryEquation();
+    }
 }
 
-const cIterProgBar = ui.createProgressBar
-({
-    margin: new Thickness(6, 0),
-    progressColor: () => !mimickLastHistory || (nudge &&
-    nudge.level == nudge.maxLevel) || (nextNudge in lastHistory &&
-    turns == lastHistory[nextNudge][0] - 1) ? Color.TEXT : Color.BORDER
+var getEquationOverlay = () => ui.createGrid({
+    margin: new Thickness(40, 0, 40, 0),
+    children: [
+        prgBar = ui.createProgressBar({ progress: 0, verticalOptions: LayoutOptions.START }),
+        
+        /*ui.createGrid({
+            opacity: () => stage == 5 ? 1 : 0, 
+            children: [
+                ui.createGrid({
+                    columnDefinitions: ["7*", "3*"],
+                    children: [
+                        ui.createLatexLabel({ text: "Power", 
+                            margin: new Thickness(0, 10), horizontalOptions: LayoutOptions.END, fontSize: 10 
+                        }),
+                        ui.createLatexLabel({ 
+                            text: () => (dicePoints * ourHealth) + (dicePoints < 1e12 ? " / " + dicePoints : ""), 
+                            fontSize: 10,
+                            margin: new Thickness(0, 10),
+                        }),
+                        ui.createLatexLabel({ text: "Work", 
+                            margin: new Thickness(0, 10), horizontalOptions: LayoutOptions.END, verticalOptions: LayoutOptions.END, fontSize: 10 
+                        }),
+                        ui.createLatexLabel({ 
+                            text: () => (theirMaxHealth * theirHealth) + (dicePoints < 1e12 ? " / " + theirMaxHealth : ""), 
+                            fontSize: 10, 
+                            verticalOptions: LayoutOptions.END,
+                            margin: () => dicePoints < 1e12 ? new Thickness(0, 7) : new Thickness(0, 10),
+                        }),
+                    ],
+                }),
+                ui.createProgressBar({ 
+                    progress: () => theirHealth.toNumber(), verticalOptions: LayoutOptions.END, 
+                }),
+            ],
+        }),*/
+    ],
+    onTouched: (e) => {
+        if (e.type != TouchType.PRESSED) return;
+        if (stage == 1) {//might change stage later
+            if (gacha < 1) return;
+            let multi = Math.min(gacha, 1);// + gachaBulk.level);
+            let odds = [5, 4, 3, 2, 1, 0].map((x) => Math.pow(5 - gachaValue.level * .2, x));
+            for (let n = 0; n < multi; n++) {
+                let osum = odds.reduce((x, y) => x + y);
+                for (let a = 0; a < 6; a++) {
+                    let rand = Math.random() < odds[a] / osum ? 1 : 0;
+                    stars[a] += rand * 1//(gachaValue2.level + 1);
+                    if (rand > 0) break;
+                    osum -= odds[a];
+                }
+                /*tSkill = 0;
+                let a = 0;
+                while (a < 1000 || tSkill >= 13) {
+                    tSkill = Math.floor(Math.random() * skillData.length);
+                    if (tSkill < 8) break;
+                    else if (tSkill < 13 && Math.random() < 0.5) break;
+                    else if (spUnlock.level > 0 && Math.random() < 0.02) break;
+                    a++;
+                }
+                let skill = skills[tSkill];
+                if (skill.level == 0) skill.level += 1;
+                tSkill = null;*/
+            }
+            gacha -= multi;
+            seSeed = Math.floor(Math.random() * 2147483647);
+            //theory.invalidatePrimaryEquation();
+            //theory.invalidateSecondaryEquation();
+            //theory.invalidateQuaternaryValues();
+            //updateAvailability();
+        }
+    }
 });
 
 var getPrimaryEquation = () => {
@@ -121,6 +214,7 @@ var getPrimaryEquation = () => {
     if (c2Exp.level == 2) result += "^{1.1}";
     if (c2Exp.level == 3) result += "^{1.15}";
 
+    theory.primaryEquationScale = 1;
     return result;
 }
 
