@@ -43,7 +43,6 @@ quaternaryEntries = [];
 
 var init = () => {
     currency = theory.createCurrency();
-   // gacha = theory.createCurrency('θ', '\ominus');
 
     ///////////////////
     // Regular Upgrades
@@ -222,6 +221,7 @@ var getQuaternaryEntries = () => {
         quaternaryEntries.push(new QuaternaryEntry("⋆_5", null));
         quaternaryEntries.push(new QuaternaryEntry("⋆_6", null));
         quaternaryEntries.push(new QuaternaryEntry("⋆_t", null));
+        quaternaryEntries.push(new QuaternaryEntry("θ", null));
     }
 
     quaternaryEntries[0].value = stars[0].toString();
@@ -231,6 +231,7 @@ var getQuaternaryEntries = () => {
     quaternaryEntries[4].value = stars[4].toString();
     quaternaryEntries[5].value = stars[5].toString();
     quaternaryEntries[6].value = starTotal.toString();
+    quaternaryEntries[7].value = gacha.toString();
 
     return quaternaryEntries;
 }
