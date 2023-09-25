@@ -196,13 +196,15 @@ var getPrimaryEquation = () => {
     if (c2Exp.level == 2) result += "^{1.1}";
     if (c2Exp.level == 3) result += "^{1.15}";
 
-    result += "☆_t_o_t_a_l"
+    result += "⋆_t_o_t_a_l"
     theory.primaryEquationScale = 1;
     return result;
 }
 
 var getSecondaryEquation = () => theory.latexSymbol + "=\\max\\rho";
-var getTertiaryEquation = () => "_t_o_t_a_l=" + starTotal;
+var getTertiaryEquation = () => {
+    return `⋆_t_o_t_a_l = ${starTotal}`;
+  }
 var getPublicationMultiplier = (tau) => tau.pow(0.164) / BigNumber.THREE;
 var getPublicationMultiplierFormula = (symbol) => "\\frac{{" + symbol + "}^{0.164}}{3}";
 var getTau = () => currency.value;
