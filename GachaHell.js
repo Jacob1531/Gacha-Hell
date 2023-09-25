@@ -1,8 +1,19 @@
-import { ExponentialCost, FreeCost, LinearCost } from "./api/Costs";
+import { ExponentialCost, LinearCost, ConstantCost, CompositeCost, FreeCost, StepwiseCost } from "./api/Costs";
 import { Localization } from "./api/Localization";
 import { BigNumber } from "./api/BigNumber";
 import { theory } from "./api/Theory";
 import { Utils } from "./api/Utils";
+import { TextAlignment } from "./api/ui/properties/TextAlignment";
+import { Thickness } from "./api/ui/properties/Thickness";
+import { Color } from "./api/ui/properties/Color";
+import { LayoutOptions } from "./api/ui/properties/LayoutOptions";
+import { TouchType } from "./api/ui/properties/TouchType";
+import { Currency } from "./api/Currency";
+import { Easing } from "./api/ui/properties/Easing";
+import { FontFamily } from "./api/ui/properties/FontFamily";
+import { ImageSource } from "./api/ui/properties/ImageSource";
+import { StackOrientation } from "./api/ui/properties/StackOrientation";
+
 
 var id = "Gacha_Hell";
 var name = "Gacha Hell";
@@ -10,6 +21,7 @@ var description = "A theory that exists to stave off the gacha crave many are un
 var authors = "Jacob1531";
 var version = 0.1;
 
+var time=0;
 var currency;
 var c1, c2;
 var c1Exp, c2Exp;
@@ -87,6 +99,14 @@ var tick = (elapsedTime, multiplier) => {
     currency.value += dt * bonus * getC1(c1.level).pow(getC1Exponent(c1Exp.level)) *
                                    getC2(c2.level).pow(getC2Exponent(c2Exp.level));
 }
+
+const cIterProgBar = ui.createProgressBar
+({
+    margin: new Thickness(6, 0),
+    progressColor: () => !mimickLastHistory || (nudge &&
+    nudge.level == nudge.maxLevel) || (nextNudge in lastHistory &&
+    turns == lastHistory[nextNudge][0] - 1) ? Color.TEXT : Color.BORDER
+});
 
 var getPrimaryEquation = () => {
     let result = "\\dot{\\rho} = c_1";
