@@ -200,7 +200,8 @@ var getPrimaryEquation = () => {
     return result;
 }
 
-var getSecondaryEquation = () => theory.latexSymbol + "=\\max(\\rho)     ☆_t_o_t_a_l=" + starTotal;
+var getSecondaryEquation = () => theory.latexSymbol + "=\\max\\rho";
+var getTertiaryEquation = () => "_t_o_t_a_l=" + starTotal;
 var getPublicationMultiplier = (tau) => tau.pow(0.164) / BigNumber.THREE;
 var getPublicationMultiplierFormula = (symbol) => "\\frac{{" + symbol + "}^{0.164}}{3}";
 var getTau = () => currency.value;
