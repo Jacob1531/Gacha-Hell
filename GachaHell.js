@@ -126,6 +126,7 @@ var tick = (elapsedTime, multiplier) => {
         //theory.invalidatePrimaryEquation();
         //theory.invalidateSecondaryEquation();
     }
+    prgBar.progress = Math.min([prgGacha][stage].toNumber(), 1);
 }
 
 var getEquationOverlay = () => ui.createGrid({
@@ -169,7 +170,7 @@ var getEquationOverlay = () => ui.createGrid({
         if (stage == 1) {//might change stage later
             if (gacha < 1) return;
             let multi = Math.min(gacha, 1);// + gachaBulk.level);
-            let odds = [5, 4, 3, 2, 1, 0].map((x) => Math.pow(5 - gachaValue.level * .2, x));
+            let odds = [5, 4, 3, 2, 1, 0].map((x) => Math.pow(5 - .2,x));//gachaValue.level * .2, x));
             for (let n = 0; n < multi; n++) {
                 let osum = odds.reduce((x, y) => x + y);
                 for (let a = 0; a < 6; a++) {
