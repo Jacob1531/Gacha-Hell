@@ -207,6 +207,7 @@ var getPrimaryEquation = () => {
 
 
 var getSecondaryEquation = () => {
+    theory.secondaryEquationHeight+=1;
     return "⋆_t = \\prod_{i=1}^{n=6}\\left(1+⋆_i^{\\sqrt{i}}\\right)";
   }
 var getTertiaryEquation = () => theory.latexSymbol + "=\\max\\rho";
