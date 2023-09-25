@@ -166,13 +166,7 @@ var getEquationOverlay = () => ui.createGrid({
                 if (skill.level == 0) skill.level += 1;
                 tSkill = null;*/
             }
-            let temp=1;
-            for(let i=0; i<stars.length;i++)
-            {
-                temp*=stars[i]+1;
-            }
-            starTotal=temp;
-            getTertiaryEquation();
+            
             gacha -= multi;
             seSeed = Math.floor(Math.random() * 2147483647);
             //theory.invalidatePrimaryEquation();
@@ -201,10 +195,16 @@ var getPrimaryEquation = () => {
     return result;
 }
 
-var getSecondaryEquation = () => theory.latexSymbol + "=\\max\\rho";
-var getTertiaryEquation = () => {
+
+var getSecondaryEquation = () => {
+    let temp = 1;
+    for(let i = 0; i < stars.length; i++) {
+        temp *= (stars[i] + 1);
+    }
+    starTotal = temp;
     return `⋆_t_o_t_a_l = ${starTotal}`;
-  }
+}
+var getTertiaryEquation = () => theory.latexSymbol + "=\\max\\rho";
 var getPublicationMultiplier = (tau) => tau.pow(0.164) / BigNumber.THREE;
 var getPublicationMultiplierFormula = (symbol) => "\\frac{{" + symbol + "}^{0.164}}{3}";
 var getTau = () => currency.value;
