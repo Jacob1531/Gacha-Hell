@@ -34,6 +34,7 @@ var prgGacha = BigNumber.ZERO;
 
 var gacha = BigNumber.ZERO, gachaTotal = BigNumber.ZERO;
 var stars = [0, 0, 0, 0, 0, 0];
+var starTotal=BigNumber.ZERO;
 
 var achievement1, achievement2;
 var chapter1, chapter2;
@@ -116,7 +117,8 @@ var tick = (elapsedTime, multiplier) => {
     let dt = BigNumber.from(elapsedTime * multiplier);
     let bonus = theory.publicationMultiplier;
     currency.value += dt * bonus * getC1(c1.level).pow(getC1Exponent(c1Exp.level)) *
-                                   getC2(c2.level).pow(getC2Exponent(c2Exp.level));
+                                   getC2(c2.level).pow(getC2Exponent(c2Exp.level)) *
+                                   starTotal;
     
     let spd=1;//some other multiplier here soon
     prgGacha += dt * spd;
@@ -130,41 +132,12 @@ var tick = (elapsedTime, multiplier) => {
     prgBar.progress = Math.min([prgGacha][stage].toNumber(), 1);
 }
 
+
+
 var getEquationOverlay = () => ui.createGrid({
     margin: new Thickness(40, 0, 40, 0),
     children: [
         prgBar = ui.createProgressBar({ progress: 0, verticalOptions: LayoutOptions.START }),
-        
-        /*ui.createGrid({
-            opacity: () => stage == 5 ? 1 : 0, 
-            children: [
-                ui.createGrid({
-                    columnDefinitions: ["7*", "3*"],
-                    children: [
-                        ui.createLatexLabel({ text: "Power", 
-                            margin: new Thickness(0, 10), horizontalOptions: LayoutOptions.END, fontSize: 10 
-                        }),
-                        ui.createLatexLabel({ 
-                            text: () => (dicePoints * ourHealth) + (dicePoints < 1e12 ? " / " + dicePoints : ""), 
-                            fontSize: 10,
-                            margin: new Thickness(0, 10),
-                        }),
-                        ui.createLatexLabel({ text: "Work", 
-                            margin: new Thickness(0, 10), horizontalOptions: LayoutOptions.END, verticalOptions: LayoutOptions.END, fontSize: 10 
-                        }),
-                        ui.createLatexLabel({ 
-                            text: () => (theirMaxHealth * theirHealth) + (dicePoints < 1e12 ? " / " + theirMaxHealth : ""), 
-                            fontSize: 10, 
-                            verticalOptions: LayoutOptions.END,
-                            margin: () => dicePoints < 1e12 ? new Thickness(0, 7) : new Thickness(0, 10),
-                        }),
-                    ],
-                }),
-                ui.createProgressBar({ 
-                    progress: () => theirHealth.toNumber(), verticalOptions: LayoutOptions.END, 
-                }),
-            ],
-        }),*/
     ],
     onTouched: (e) => {
         if (e.type != TouchType.PRESSED) return;
@@ -193,6 +166,12 @@ var getEquationOverlay = () => ui.createGrid({
                 if (skill.level == 0) skill.level += 1;
                 tSkill = null;*/
             }
+            let temp=1;
+            for(let i=0; i<stars.length;i++)
+            {
+                temp*=stars[i]+1;
+            }
+            starTotal=temp;
             gacha -= multi;
             seSeed = Math.floor(Math.random() * 2147483647);
             //theory.invalidatePrimaryEquation();
@@ -216,11 +195,12 @@ var getPrimaryEquation = () => {
     if (c2Exp.level == 2) result += "^{1.1}";
     if (c2Exp.level == 3) result += "^{1.15}";
 
+    result += "☆_total"
     theory.primaryEquationScale = 1;
     return result;
 }
 
-var getSecondaryEquation = () => theory.latexSymbol + "=\\max\\rho";
+var getSecondaryEquation = () => theory.latexSymbol + "=\\max\\rho"+'\n'+"☆_total=\\"+starTotal;
 var getPublicationMultiplier = (tau) => tau.pow(0.164) / BigNumber.THREE;
 var getPublicationMultiplierFormula = (symbol) => "\\frac{{" + symbol + "}^{0.164}}{3}";
 var getTau = () => currency.value;
