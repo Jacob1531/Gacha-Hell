@@ -139,6 +139,7 @@ var tick = (elapsedTime, multiplier) => {
         //theory.invalidateSecondaryEquation();
     }
     prgBar.progress = Math.min([prgGacha][stage].toNumber(), 1);
+    theory.invalidateQuaternaryValues();
 }
 
 
@@ -199,27 +200,27 @@ var getPrimaryEquation = () => {
     if (c2Exp.level == 2) result += "^{1.1}";
     if (c2Exp.level == 3) result += "^{1.15}";
 
-    result += "⋆_t_o_t_a_l"
+    result += "⋆_t"
     theory.primaryEquationScale = 1;
     return result;
 }
 
 
 var getSecondaryEquation = () => {
-    return `⋆_t_o_t_a_l = ${starTotal}`;
+    return `⋆_t = ${starTotal}`;
   }
 var getTertiaryEquation = () => theory.latexSymbol + "=\\max\\rho";
 
 var getQuaternaryEntries = () => {
     if (quaternaryEntries.length == 0)
     {
-        quaternaryEntries.push(new QuaternaryEntry("⋆", null));
-        quaternaryEntries.push(new QuaternaryEntry("⋆⋆", null));
-        quaternaryEntries.push(new QuaternaryEntry("⋆⋆⋆", null));
-        quaternaryEntries.push(new QuaternaryEntry("⋆⋆⋆⋆", null));
-        quaternaryEntries.push(new QuaternaryEntry("⋆⋆⋆⋆⋆", null));
-        quaternaryEntries.push(new QuaternaryEntry("⋆⋆⋆⋆⋆⋆", null));
-        quaternaryEntries.push(new QuaternaryEntry("⋆_t_o_t_a_l", null));
+        quaternaryEntries.push(new QuaternaryEntry("⋆_1", null));
+        quaternaryEntries.push(new QuaternaryEntry("⋆_2", null));
+        quaternaryEntries.push(new QuaternaryEntry("⋆_3", null));
+        quaternaryEntries.push(new QuaternaryEntry("⋆_4", null));
+        quaternaryEntries.push(new QuaternaryEntry("⋆_5", null));
+        quaternaryEntries.push(new QuaternaryEntry("⋆_6", null));
+        quaternaryEntries.push(new QuaternaryEntry("⋆_t", null));
     }
 
     quaternaryEntries[0].value = stars[0].toString();
