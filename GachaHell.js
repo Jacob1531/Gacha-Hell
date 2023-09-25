@@ -29,6 +29,7 @@ var c1, c2;
 var c1Exp, c2Exp;
 
 //progress bar variable(s)
+var prgBar;
 var prgGacha = BigNumber.ZERO;
 
 var gacha = BigNumber.ZERO, gachaTotal = BigNumber.ZERO;
