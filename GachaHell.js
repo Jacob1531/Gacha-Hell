@@ -172,6 +172,7 @@ var getEquationOverlay = () => ui.createGrid({
                 temp*=stars[i]+1;
             }
             starTotal=temp;
+            getTertiaryEquation();
             gacha -= multi;
             seSeed = Math.floor(Math.random() * 2147483647);
             //theory.invalidatePrimaryEquation();
