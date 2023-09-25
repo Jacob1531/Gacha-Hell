@@ -21,7 +21,7 @@ var description = "A theory that exists to stave off the gacha crave many are un
 var authors = "Jacob1531";
 var version = 0.1;
 
-var stage=1;
+var stage=0;
 
 var time=0;
 var currency;
@@ -168,7 +168,7 @@ var getEquationOverlay = () => ui.createGrid({
     ],
     onTouched: (e) => {
         if (e.type != TouchType.PRESSED) return;
-        if (stage == 1) {//might change stage later
+        if (stage == 0) {//might change stage later
             if (gacha < 1) return;
             let multi = Math.min(gacha, 1);// + gachaBulk.level);
             let odds = [5, 4, 3, 2, 1, 0].map((x) => Math.pow(5 - .2,x));//gachaValue.level * .2, x));
