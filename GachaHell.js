@@ -43,6 +43,7 @@ quaternaryEntries = [];
 
 var init = () => {
     currency = theory.createCurrency();
+    gacha = theory.createCurrency('\\ominus');
 
     ///////////////////
     // Regular Upgrades
