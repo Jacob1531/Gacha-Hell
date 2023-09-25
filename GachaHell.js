@@ -125,7 +125,7 @@ var tick = (elapsedTime, multiplier) => {
     let temp=BigNumber.ONE;//would be more optimal if i could get this to only update on tap
     for(let i=0; i<stars.length;i++)
     {
-        temp*=(stars[i]+BigNumber.ONE);
+        temp*=Math.pow((stars[i]+BigNumber.ONE), Math.sqrt(i+1));
     }
     starTotal=temp;
     
@@ -207,7 +207,7 @@ var getPrimaryEquation = () => {
 
 
 var getSecondaryEquation = () => {
-    return `⋆_t = ${starTotal}`;
+    return "⋆_t = prod_{i=1}^{n=6}\\left(1+\\⋆_i^{\\sqrt{i}}\\right)";
   }
 var getTertiaryEquation = () => theory.latexSymbol + "=\\max\\rho";
 
