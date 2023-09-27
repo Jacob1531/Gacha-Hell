@@ -41,13 +41,18 @@ var chapter1, chapter2;
 
 quaternaryEntries = [];
 
-var getInternalState = () => `${stars} ${gacha} ${gachaTotal}`
+var getInternalState = () => `${stars[[0]]} ${stars[[1]]} ${stars[[2]]} ${stars[[3]]} ${stars[[4]]} ${stars[[5]]} ${gacha} ${gachaTotal}`
 
 var setInternalState = (state) => {
     let values = state.split(" ");
-    if (values.length > 0) stars = values[0];
-    if (values.length > 1) gacha = parseBigNumber(values[1]);
-    if (values.length > 2) gachaTotal = parseBigNumber(values[2]);
+    if (values.length > 0) stars[0] = values[0];
+    if (values.length > 1) stars[1] = values[1];
+    if (values.length > 2) stars[2] = values[2];
+    if (values.length > 3) stars[3] = values[3];
+    if (values.length > 4) stars[4] = values[4];
+    if (values.length > 5) stars[5] = values[5];
+    if (values.length > 6) gacha = parseBigNumber(values[6]);
+    if (values.length > 7) gachaTotal = parseBigNumber(values[7]);
 }
 
 var postPublish = () => {
