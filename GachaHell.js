@@ -41,6 +41,20 @@ var chapter1, chapter2;
 
 quaternaryEntries = [];
 
+var getInternalState = () => `${stars} ${gacha} ${gachaTotal}`
+
+var setInternalState = (state) => {
+    let values = state.split(" ");
+    if (values.length > 0) stars = parseBigNumber(values[0]);
+    if (values.length > 1) gacha = parseBigNumber(values[1]);
+    if (values.length > 2) gachaTotal = parseBigNumber(values[2]);
+}
+
+var postPublish = () => {
+    stars=[0,0,0,0,0,0];
+    var gacha = BigNumber.ZERO;
+}
+
 var init = () => {
     currency = theory.createCurrency();
 
