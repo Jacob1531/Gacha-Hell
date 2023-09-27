@@ -57,7 +57,7 @@ var setInternalState = (stateStr) =>
 
     let state = JSON.parse(stateStr);
     version = state.version ?? version
-    stars= state.stars ?? 0;
+    stars= state.stars ?? [0,0,0,0,0,0];
     gacha = state.gacha ?? BigNumber.ZERO;
     gachaTotal = state.gachaTotal ?? BigNumber.ZERO;
 }
