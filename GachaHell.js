@@ -45,7 +45,7 @@ var getInternalState = () => `${stars} ${gacha} ${gachaTotal}`
 
 var setInternalState = (state) => {
     let values = state.split(" ");
-    if (values.length > 0) stars = parseBigNumber(values[0]);
+    if (values.length > 0) stars = values[0];
     if (values.length > 1) gacha = parseBigNumber(values[1]);
     if (values.length > 2) gachaTotal = parseBigNumber(values[2]);
 }
