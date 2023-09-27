@@ -41,7 +41,27 @@ var chapter1, chapter2;
 
 quaternaryEntries = [];
 
-var getInternalState = () => `${stars[[0]]} ${stars[[1]]} ${stars[[2]]} ${stars[[3]]} ${stars[[4]]} ${stars[[5]]} ${gacha} ${gachaTotal}`
+var getInternalState = () => JSON.stringify
+({
+    version: version,
+    time: time,
+    stars: stars,
+    gacha: gacha,
+    gachaTotal: gachaTotal,
+}) 
+
+var setInternalState = (stateStr) =>
+{
+    if(!stateStr)
+        return;
+
+    let state = JSON.parse(stateStr);
+    version = state.version ?? version
+    stars= state.stars ?? 0;
+    gacha = state.gacha ?? BigNumber.ZERO;
+    gachaTotal = state.gachaTotal ?? BigNumber.ZERO;
+}
+/*var getInternalState = () => `${stars[[0]]} ${stars[[1]]} ${stars[[2]]} ${stars[[3]]} ${stars[[4]]} ${stars[[5]]} ${gacha} ${gachaTotal}`
 
 var setInternalState = (state) => {
     let values = state.split(" ");
@@ -54,7 +74,7 @@ var setInternalState = (state) => {
     if (values.length > 5) stars[5] = parseBigNumber(values[5]);
     if (values.length > 6) gacha = parseBigNumber(values[6]);
     if (values.length > 7) gachaTotal = parseBigNumber(values[7]);
-}
+}*/
 
 var postPublish = () => {
     stars=[0,0,0,0,0,0];
