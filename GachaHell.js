@@ -45,12 +45,13 @@ var getInternalState = () => `${stars[[0]]} ${stars[[1]]} ${stars[[2]]} ${stars[
 
 var setInternalState = (state) => {
     let values = state.split(" ");
-    if (values.length > 0) stars[0] = values[0];
-    if (values.length > 1) stars[1] = values[1];
-    if (values.length > 2) stars[2] = values[2];
-    if (values.length > 3) stars[3] = values[3];
-    if (values.length > 4) stars[4] = values[4];
-    if (values.length > 5) stars[5] = values[5];
+    if (values.length > 0) stars[0] = parseBigNumber(values[0]);
+    else stars[0]=0;
+    if (values.length > 1) stars[1] = parseBigNumber(values[1]);
+    if (values.length > 2) stars[2] = parseBigNumber(values[2]);
+    if (values.length > 3) stars[3] = parseBigNumber(values[3]);
+    if (values.length > 4) stars[4] = parseBigNumber(values[4]);
+    if (values.length > 5) stars[5] = parseBigNumber(values[5]);
     if (values.length > 6) gacha = parseBigNumber(values[6]);
     if (values.length > 7) gachaTotal = parseBigNumber(values[7]);
 }
