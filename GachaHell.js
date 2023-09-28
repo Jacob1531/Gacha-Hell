@@ -47,7 +47,7 @@ var getInternalState = () => JSON.stringify
     time: time,
     stars: stars,
     gacha: gacha,
-    gachaTotal: gachaTotal,
+    gachaTotal: gachaTotal
 }) 
 
 var setInternalState = (stateStr) =>
