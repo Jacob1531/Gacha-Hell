@@ -32,7 +32,8 @@ var c1Exp, c2Exp;
 var prgBar;
 var prgGacha = BigNumber.ZERO;
 
-var gacha = BigNumber.ZERO, gachaTotal = BigNumber.ZERO;
+var gacha = BigNumber.ZERO;
+var gachaTotal = BigNumber.ZERO;
 var stars = [0, 0, 0, 0, 0, 0];
 var starTotal=BigNumber.ZERO;
 
