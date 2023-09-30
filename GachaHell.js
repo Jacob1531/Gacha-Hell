@@ -47,8 +47,8 @@ var getInternalState = () => JSON.stringify
     version: version,
     time: time,
     stars: stars,
-    gacha: gacha,
-    gachaTotal: gachaTotal
+    gacha: gacha.toBase64String(),
+    gachaTotal: gachaTotal.toBase64String()
 }) 
 
 var setInternalState = (stateStr) =>
@@ -59,8 +59,8 @@ var setInternalState = (stateStr) =>
     let state = JSON.parse(stateStr);
     version = state.version ?? version
     stars= state.stars ?? [0,0,0,0,0,0];
-    gacha = state.gacha ?? BigNumber.ZERO;
-    gachaTotal = state.gachaTotal ?? BigNumber.ZERO;
+    gacha =   BigNumber.fromBase64String(state.gacha) ?? BigNumber.ZERO;
+    gachaTotal =  BigNumber.fromBase64String(state.gachaTotal) ?? BigNumber.ZERO;
 }
 /*var getInternalState = () => `${stars[[0]]} ${stars[[1]]} ${stars[[2]]} ${stars[[3]]} ${stars[[4]]} ${stars[[5]]} ${gacha} ${gachaTotal}`
 
