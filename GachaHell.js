@@ -84,6 +84,7 @@ var postPublish = () => {
 
 var init = () => {
     currency = theory.createCurrency();
+    //currency_star1=theory.createCurrency("⋆_1","\star");
 
     ///////////////////
     // Regular Upgrades
@@ -96,14 +97,6 @@ var init = () => {
         clicker.getDescription = (_) =>getDesc();
         clicker.getInfo = (amount) => getInfo();
         clicker.bought = (amount) => { prgGacha += .1 };
-    }
-
-    // c1
-    {
-        let getDesc = (level) => "c_1=" + getC1(level).toString(0);
-        c1 = theory.createUpgrade(0, currency, new FirstFreeCost(new ExponentialCost(15, Math.log2(2))));
-        c1.getDescription = (_) => Utils.getMath(getDesc(c1.level));
-        c1.getInfo = (amount) => Utils.getMathTo(getDesc(c1.level), getDesc(c1.level + amount));
     }
 
     // c2
@@ -120,6 +113,14 @@ var init = () => {
     theory.createPublicationUpgrade(0, currency, 1e10);
     theory.createBuyAllUpgrade(1, currency, 1e13);
     theory.createAutoBuyerUpgrade(2, currency, 1e30);
+
+    // c1
+    {
+        let getDesc = (level) => "c_1=" + getC1(level).toString(0);
+        c1 = theory.createUpgrade(0, stars[0], new FirstFreeCost(new ExponentialCost(15, Math.log2(2))));
+        c1.getDescription = (_) => Utils.getMath(getDesc(c1.level));
+        c1.getInfo = (amount) => Utils.getMathTo(getDesc(c1.level), getDesc(c1.level + amount));
+    }
 
     ///////////////////////
     //// Milestone Upgrades
