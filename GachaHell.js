@@ -34,7 +34,7 @@ var prgGacha = BigNumber.ZERO;
 
 var gacha = BigNumber.ZERO;
 var gachaTotal = BigNumber.ZERO;
-var stars = new Array(6);
+var stars =[0,0,0,0,0,0];
 var starNames =["⋆_1","⋆_2","⋆_3","⋆_4","⋆_5","⋆_6"];
 var starTotal=BigNumber.ZERO;
 
@@ -155,6 +155,8 @@ var init = () => {
 
     updateAvailability();
 }
+
+var isCurrencyVisible = (index: number) =>!index;
 
 var updateAvailability = () => {
     c2Exp.isAvailable = c1Exp.level > 0;
