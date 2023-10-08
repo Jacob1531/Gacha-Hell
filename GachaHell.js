@@ -36,7 +36,7 @@ var prgGacha = BigNumber.ZERO;
 var gacha = BigNumber.ZERO;
 var gachaTotal = BigNumber.ZERO;
 var stars =new Array(6);
-var starNames =["⋆_{1}","⋆_{2}","⋆_{3}","⋆_{4}","⋆_{5}","⋆_{6}"];
+var starNames =["⋆₁","⋆₂","⋆₃","⋆₄","⋆₅","⋆₆"];
 var starTotal=BigNumber.ZERO;
 
 var achievement1, achievement2;
@@ -120,28 +120,28 @@ var init = () => {
     // c1
     {
         let getDesc = (level) => "c_1=" + getC1(level).toString(0);
-        c1 = theory.createPermanentUpgrade(4, stars[0], new ConstantCost(125));
+        c1 = theory.createPermanentUpgrade(4, stars[0], new ConstantCost(200));
         c1.getDescription = (_) => Utils.getMath(getDesc(c1.level));
         c1.getInfo = (amount) => Utils.getMathTo(getDesc(c1.level), getDesc(c1.level + amount));
     }
     // c2
     {
         let getDesc = (level) => "c_2=" + getC2(level).toString(0);
-        c2 = theory.createPermanentUpgrade(5, stars[1], new ConstantCost(25));
+        c2 = theory.createPermanentUpgrade(5, stars[1], new ConstantCost(60));
         c2.getDescription = (_) => Utils.getMath(getDesc(c2.level));
         c2.getInfo = (amount) => Utils.getMathTo(getDesc(c2.level), getDesc(c2.level + amount));
     }
     // c3
     {
         let getDesc = (level) => "c_3=" + getC3(level).toString(0);
-        c3 = theory.createPermanentUpgrade(6, stars[2], new ConstantCost(5));
+        c3 = theory.createPermanentUpgrade(6, stars[2], new ConstantCost(15));
         c3.getDescription = (_) => Utils.getMath(getDesc(c3.level));
         c3.getInfo = (amount) => Utils.getMathTo(getDesc(c3.level), getDesc(c3.level + amount));
     }
     // c4
     {
         let getDesc = (level) => "c_4=" + getC4(level).toString(0);
-        c4 = theory.createPermanentUpgrade(7, stars[3], new ConstantCost(1));
+        c4 = theory.createPermanentUpgrade(7, stars[3], new ConstantCost(3));
         c4.getDescription = (_) => Utils.getMath(getDesc(c4.level));
         c4.getInfo = (amount) => Utils.getMathTo(getDesc(c4.level), getDesc(c4.level + amount));
     }
@@ -197,7 +197,7 @@ var tick = (elapsedTime, multiplier) => {
     }
     starTotal=temp;
     
-    let spd=.25;//some other multiplier here soon
+    let spd=.5;//some other multiplier here soon
     prgGacha += dt * spd;
     if (prgGacha >= 1) {
         gacha += prgGacha.floor();
