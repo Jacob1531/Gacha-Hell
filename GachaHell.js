@@ -36,7 +36,7 @@ var prgGacha = BigNumber.ZERO;
 var gacha = BigNumber.ZERO;
 var gachaTotal = BigNumber.ZERO;
 var stars =new Array(6);
-var starNames =["⋆_1","⋆_2","⋆_3","⋆_4","⋆_5","⋆_6"];
+var starNames =["⋆_{1}","⋆_{2}","⋆_{3}","⋆_{4}","⋆_{5}","⋆_{6}"];
 var starTotal=BigNumber.ZERO;
 
 var achievement1, achievement2;
