@@ -156,7 +156,7 @@ var init = () => {
     updateAvailability();
 }
 
-var isCurrencyVisible = (index: number) =>!index;
+var isCurrencyVisible = (index) =>!index;
 
 var updateAvailability = () => {
     c2Exp.isAvailable = c1Exp.level > 0;
