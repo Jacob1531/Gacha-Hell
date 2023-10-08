@@ -34,7 +34,8 @@ var prgGacha = BigNumber.ZERO;
 
 var gacha = BigNumber.ZERO;
 var gachaTotal = BigNumber.ZERO;
-var stars = [0, 0, 0, 0, 0, 0];
+var stars = new Array(6);
+var starNames =["⋆_1","⋆_2","⋆_3","⋆_4","⋆_5","⋆_6"];
 var starTotal=BigNumber.ZERO;
 
 var achievement1, achievement2;
@@ -78,13 +79,15 @@ var setInternalState = (state) => {
 }*/
 
 var postPublish = () => {
-    stars=[0,0,0,0,0,0];
+    //stars=[0,0,0,0,0,0];
     var gacha = BigNumber.ZERO;
 }
 
 var init = () => {
     currency = theory.createCurrency();
-    //currency_star1=theory.createCurrency("⋆_1","\star");
+    for (let i = 0; i < 9; i++) {
+        stars[i] = theory.createCurrency(starNames[i], starNames[i]);
+    }
 
     ///////////////////
     // Regular Upgrades
