@@ -27,13 +27,14 @@ var time=0;
 var currency;
 var c1, c2;
 var a;
+var pullAmount;
 var c1Exp, c2Exp;
 
 //progress bar variable(s)
 var prgBar;
 var prgGacha = BigNumber.ZERO;
 
-var gacha = BigNumber.ZERO;
+var gacha;// = BigNumber.ZERO;
 var gachaTotal = BigNumber.ZERO;
 var gachaPullMax=1;
 var stars =new Array(6);
@@ -50,7 +51,7 @@ var getInternalState = () => JSON.stringify
     version: version,
     time: time,
     //stars: stars,
-    gacha: gacha.toBase64String(),
+    //gacha: gacha.toBase64String(),
     gachaTotal: gachaTotal.toBase64String()
 }) 
 
@@ -62,7 +63,7 @@ var setInternalState = (stateStr) =>
     let state = JSON.parse(stateStr);
     version = state.version ?? version
     //stars= state.stars ?? new Array(6);
-    gacha =   BigNumber.fromBase64String(state.gacha) ?? BigNumber.ZERO;
+    //gacha =   BigNumber.fromBase64String(state.gacha) ?? BigNumber.ZERO;
     gachaTotal =  BigNumber.fromBase64String(state.gachaTotal) ?? BigNumber.ZERO;
 }
 /*var getInternalState = () => `${stars[[0]]} ${stars[[1]]} ${stars[[2]]} ${stars[[3]]} ${stars[[4]]} ${stars[[5]]} ${gacha} ${gachaTotal}`
@@ -82,11 +83,13 @@ var setInternalState = (state) => {
 
 var postPublish = () => {
     //stars=[0,0,0,0,0,0];
-    var gacha = BigNumber.ZERO;
+    //var gacha = BigNumber.ZERO;
 }
 
 var init = () => {
     currency = theory.createCurrency();
+    gacha = theory.createCurrency("θ","θ")
+
     for (let i = 0; i < 6; i++) {
         stars[i] = theory.createCurrency(starNames[i], starNames[i]);
     }
@@ -123,48 +126,48 @@ var init = () => {
         let getDesc = (level) => {
             switch(level) {
                 case 0:
-                  // code block
+                    "New Multi-Pull Feature! Maximum 10 rolls per tap with 10 rolls giving 1 bonus roll!";
                   break;
                 case 1:
-                  // code block
+                    "Additional Multi-Pull Content! Massive 100 pull capabilities with an additional 1 roll for 100 rolls! (Total 11 bonus at 100)";
                   break;
                 case 2:
-                  // code block
+                    "Never-Before-Seen Multi-Pull DLC! Stupendous 1000 pull availability with a COOMPLETELY FREE 1 roll for 1000 rolls! (Total 111 bonus at 1000)";
                   break;
                 default:
-                  // code block
+                    "Standard 10 times increase in pull capability increase with a bonus roll at "+Math.pow(10,1+pullAmount.level)+" rolls."
               }
         };
-        pullAmount = theory.createPermanentUpgrade(5, stars[0], new ConstantCost(250));
-        c1.getDescription = (_) => Utils.getMath(getDesc(c1.level));
-        c1.getInfo = (amount) => Utils.getMathTo(getDesc(c1.level), getDesc(c1.level + amount));
+        pullAmount = theory.createPermanentUpgrade(3, gacha, new ExponentialCost(100,Math.log2(10)));
+        c1.getDescription = (_) => Utils.getMath(getDesc(pullAmount.level));
+        c1.getInfo = (amount) => Utils.getMathTo(getDesc(pullAmount.level), getDesc(pullAmount.level + amount));
     }
 
     // c1
     {
         let getDesc = (level) => "c_1=" + getC1(level).toString(0);
-        c1 = theory.createPermanentUpgrade(5, stars[0], new ConstantCost(250));
+        c1 = theory.createPermanentUpgrade(4, stars[0], new ConstantCost(250));
         c1.getDescription = (_) => Utils.getMath(getDesc(c1.level));
         c1.getInfo = (amount) => Utils.getMathTo(getDesc(c1.level), getDesc(c1.level + amount));
     }
     // c2
     {
         let getDesc = (level) => "c_2=" + getC2(level).toString(0);
-        c2 = theory.createPermanentUpgrade(6, stars[1], new ConstantCost(50));
+        c2 = theory.createPermanentUpgrade(5, stars[1], new ConstantCost(50));
         c2.getDescription = (_) => Utils.getMath(getDesc(c2.level));
         c2.getInfo = (amount) => Utils.getMathTo(getDesc(c2.level), getDesc(c2.level + amount));
     }
     // c3
     {
         let getDesc = (level) => "c_3=" + getC3(level).toString(0);
-        c3 = theory.createPermanentUpgrade(7, stars[2], new ConstantCost(10));
+        c3 = theory.createPermanentUpgrade(6, stars[2], new ConstantCost(10));
         c3.getDescription = (_) => Utils.getMath(getDesc(c3.level));
         c3.getInfo = (amount) => Utils.getMathTo(getDesc(c3.level), getDesc(c3.level + amount));
     }
     // c4
     {
         let getDesc = (level) => "c_4=" + getC4(level).toString(0);
-        c4 = theory.createPermanentUpgrade(8, stars[3], new ConstantCost(2));
+        c4 = theory.createPermanentUpgrade(7, stars[3], new ConstantCost(2));
         c4.getDescription = (_) => Utils.getMath(getDesc(c4.level));
         c4.getInfo = (amount) => Utils.getMathTo(getDesc(c4.level), getDesc(c4.level + amount));
     }
@@ -223,7 +226,7 @@ var tick = (elapsedTime, multiplier) => {
     let spd=.65;//some other multiplier here soon
     prgGacha += dt * spd;
     if (prgGacha >= 1) {
-        gacha += prgGacha.floor();
+        gacha.value += prgGacha.floor();
         gachaTotal += prgGacha.floor();
         prgGacha -= prgGacha.floor();
         //theory.invalidatePrimaryEquation();
@@ -243,12 +246,14 @@ var getEquationOverlay = () => ui.createGrid({
     onTouched: (e) => {
         if (e.type != TouchType.PRESSED) return;
         if (stage == 0) {//might change stage later
-            if (gacha < 1) return;
-            let multi = Math.min(gacha, gachaPullMax);
+            if (gacha.value < 1) return;
+            let scale=Math.pow(10,Math.floor(Math.log10(gacha.value)));//result is a form of 10eN  N being a nonnegative whole number
+
+            let multi = Math.min(scale, gachaPullMax);//pulls will be done by exponents of 10. 
+            gacha.value = gacha.value - multi;
 
             //modifies amount of pulls based off multi pull bonuses
-            let scale=Math.pow(10,Math.floor(Math.log10(multi)));//result is a form of 10eN  N being a positive whole number
-            let bonus = Math.floor(multi/scale)*Math.floor(scale/10);//multi being 900 gives 90 bonus is how this works
+            let bonus = Math.floor(multi/10);
             if (multi==gachaPullMax && multi>1){ multi+=1;}//10 pull gives 1 bonus, 100 gives 11 bonus, 1000 gives 111, etc with this line and the one below
             multi+=bonus;
 
@@ -276,7 +281,6 @@ var getEquationOverlay = () => ui.createGrid({
                 tSkill = null;*/
             }
             
-            gacha -= multi;
             seSeed = Math.floor(Math.random() * 2147483647);
             //theory.invalidatePrimaryEquation();
             //theory.invalidateSecondaryEquation();
@@ -330,7 +334,7 @@ var getQuaternaryEntries = () => {
     quaternaryEntries[4].value = stars[4].value.toString();
     quaternaryEntries[5].value = stars[5].value.toString();
     quaternaryEntries[6].value = starTotal.toString();
-    quaternaryEntries[7].value = gacha.toString();
+    quaternaryEntries[7].value = gacha.value.toString();
 
     return quaternaryEntries;
 }
@@ -348,6 +352,7 @@ var getC2 = (level) => BigNumber.THREE.pow(level);
 var getC3 = (level) => BigNumber.FIVE.pow(level);
 var getC4 = (level) => BigNumber.SEVEN.pow(level);
 var getA = (level) => Utils.getStepwisePowerSum(level, 2, 10, 0);
+var getPullMax = (level) => BigNumber.TEN.pow(level);
 var getC1Exponent = (level) => BigNumber.from(1 + 0.05 * level);
 var getC2Exponent = (level) => BigNumber.from(1 + 0.05 * level);
 
