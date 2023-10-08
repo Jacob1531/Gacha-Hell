@@ -1,4 +1,4 @@
-import { ExponentialCost, LinearCost, ConstantCost, CompositeCost, FreeCost, StepwiseCost, Cost } from "./api/Costs";
+import { ExponentialCost, LinearCost, ConstantCost, CompositeCost, FreeCost, StepwiseCost, Cost, CustomCost } from "./api/Costs";
 import { Localization } from "./api/Localization";
 import { BigNumber } from "./api/BigNumber";
 import { theory } from "./api/Theory";
@@ -106,7 +106,7 @@ var init = () => {
     // a
     {
         let getDesc = (level) => "a=" + getA(level).toString(0);
-        a = theory.createUpgrade(0, currency, new FirstFreeCost(new ExponentialCost(15, Math.log2(2))));
+        a = theory.createUpgrade(0, currency, new FirstFreeCost(new ExponentialCost(10, Math.log2(.5))));
         a.getDescription = (_) => Utils.getMath(getDesc(a.level));
         a.getInfo = (amount) => Utils.getMathTo(getDesc(a.level), getDesc(a.level + amount));
     }
@@ -120,16 +120,30 @@ var init = () => {
     // c1
     {
         let getDesc = (level) => "c_1=" + getC1(level).toString(0);
-        c1 = theory.createPermanentUpgrade(4, stars[0], new Cost(new ConstantCost(100)));
+        c1 = theory.createPermanentUpgrade(4, stars[0], new ConstantCost(125));
         c1.getDescription = (_) => Utils.getMath(getDesc(c1.level));
         c1.getInfo = (amount) => Utils.getMathTo(getDesc(c1.level), getDesc(c1.level + amount));
     }
     // c2
     {
         let getDesc = (level) => "c_2=" + getC2(level).toString(0);
-        c2 = theory.createPermanentUpgrade(5, stars[1], new Cost(new ConstantCost(20)));
+        c2 = theory.createPermanentUpgrade(5, stars[1], new ConstantCost(25));
         c2.getDescription = (_) => Utils.getMath(getDesc(c2.level));
         c2.getInfo = (amount) => Utils.getMathTo(getDesc(c2.level), getDesc(c2.level + amount));
+    }
+    // c3
+    {
+        let getDesc = (level) => "c_3=" + getC3(level).toString(0);
+        c3 = theory.createPermanentUpgrade(6, stars[2], new ConstantCost(5));
+        c3.getDescription = (_) => Utils.getMath(getDesc(c3.level));
+        c3.getInfo = (amount) => Utils.getMathTo(getDesc(c3.level), getDesc(c3.level + amount));
+    }
+    // c4
+    {
+        let getDesc = (level) => "c_4=" + getC4(level).toString(0);
+        c4 = theory.createPermanentUpgrade(7, stars[3], new ConstantCost(1));
+        c4.getDescription = (_) => Utils.getMath(getDesc(c4.level));
+        c4.getInfo = (amount) => Utils.getMathTo(getDesc(c4.level), getDesc(c4.level + amount));
     }
 
     ///////////////////////
@@ -183,7 +197,7 @@ var tick = (elapsedTime, multiplier) => {
     }
     starTotal=temp;
     
-    let spd=1;//some other multiplier here soon
+    let spd=.25;//some other multiplier here soon
     prgGacha += dt * spd;
     if (prgGacha >= 1) {
         gacha += prgGacha.floor();
@@ -254,7 +268,7 @@ var getPrimaryEquation = () => {
     if (c2Exp.level == 2) result += "^{1.1}";
     if (c2Exp.level == 3) result += "^{1.15}";
 
-    result += "⋆_t"
+    result += "c_3c_4⋆_t"
     theory.primaryEquationScale = 1;
     return result;
 }
@@ -300,6 +314,8 @@ var get2DGraphValue = () => currency.value.sign * (BigNumber.ONE + currency.valu
 //var getC1 = (level) => Utils.getStepwisePowerSum(level, 2, 10, 0);
 var getC1 = (level) => BigNumber.TWO.pow(level);
 var getC2 = (level) => BigNumber.THREE.pow(level);
+var getC3 = (level) => BigNumber.FIVE.pow(level);
+var getC4 = (level) => BigNumber.SEVEN.pow(level);
 var getA = (level) => Utils.getStepwisePowerSum(level, 2, 10, 0);
 var getC1Exponent = (level) => BigNumber.from(1 + 0.05 * level);
 var getC2Exponent = (level) => BigNumber.from(1 + 0.05 * level);
