@@ -139,8 +139,8 @@ var init = () => {
               }
         };
         pullAmount = theory.createPermanentUpgrade(3, gacha, new ExponentialCost(100,Math.log2(10)));
-        c1.getDescription = (_) => Utils.getMath(getDesc(pullAmount.level));
-        c1.getInfo = (amount) => Utils.getMathTo(getDesc(pullAmount.level), getDesc(pullAmount.level + amount));
+        pullAmount.getDescription = (_) => Utils.getMath(getDesc(pullAmount.level));
+        pullAmount.getInfo = (amount) => Utils.getMathTo(getDesc(pullAmount.level), getDesc(pullAmount.level + amount));
     }
 
     // c1
@@ -197,7 +197,7 @@ var init = () => {
 
     ///////////////////
     //// Story chapters
-    chapter1 = theory.createStoryChapter(0, "My First Chapter", "This is line 1,\nand this is line 2.\n\nNice.", () => c1.level > 0);
+    chapter1 = theory.createStoryChapter(0, "The Glory of Multi-Pulls", "This is a line about why 10 pulls is better than 1,\nand this line is why bonus pulls are better.\n\nGacha.", () => pullAmount.level > 0);
     chapter2 = theory.createStoryChapter(1, "My Second Chapter", "This is line 1 again,\nand this is line 2... again.\n\nNice again.", () => c2.level > 0);
 
     updateAvailability();
@@ -248,7 +248,7 @@ var getEquationOverlay = () => ui.createGrid({
         if (stage == 0) {//might change stage later
             if (gacha.value < 1) return;
             let scale=Math.pow(10,Math.floor(Math.log10(gacha.value)));//result is a form of 10eN  N being a nonnegative whole number
-
+            gachaPullMax=Math.pow(10,pullAmount.level);
             let multi = Math.min(scale, gachaPullMax);//pulls will be done by exponents of 10. 
             gacha.value = gacha.value - multi;
 
