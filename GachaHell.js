@@ -35,6 +35,7 @@ var prgGacha = BigNumber.ZERO;
 
 var gacha = BigNumber.ZERO;
 var gachaTotal = BigNumber.ZERO;
+var gachaPullMax=1;
 var stars =new Array(6);
 var starNames =["⋆₁","⋆₂","⋆₃","⋆₄","⋆₅","⋆₆"];
 var starTotal=BigNumber.ZERO;
@@ -117,31 +118,53 @@ var init = () => {
     theory.createBuyAllUpgrade(1, currency, 1e13);
     theory.createAutoBuyerUpgrade(2, currency, 1e30);
 
+    // Multi Pull
+    {
+        let getDesc = (level) => {
+            switch(level) {
+                case 0:
+                  // code block
+                  break;
+                case 1:
+                  // code block
+                  break;
+                case 2:
+                  // code block
+                  break;
+                default:
+                  // code block
+              }
+        };
+        pullAmount = theory.createPermanentUpgrade(5, stars[0], new ConstantCost(250));
+        c1.getDescription = (_) => Utils.getMath(getDesc(c1.level));
+        c1.getInfo = (amount) => Utils.getMathTo(getDesc(c1.level), getDesc(c1.level + amount));
+    }
+
     // c1
     {
         let getDesc = (level) => "c_1=" + getC1(level).toString(0);
-        c1 = theory.createPermanentUpgrade(4, stars[0], new ConstantCost(250));
+        c1 = theory.createPermanentUpgrade(5, stars[0], new ConstantCost(250));
         c1.getDescription = (_) => Utils.getMath(getDesc(c1.level));
         c1.getInfo = (amount) => Utils.getMathTo(getDesc(c1.level), getDesc(c1.level + amount));
     }
     // c2
     {
         let getDesc = (level) => "c_2=" + getC2(level).toString(0);
-        c2 = theory.createPermanentUpgrade(5, stars[1], new ConstantCost(50));
+        c2 = theory.createPermanentUpgrade(6, stars[1], new ConstantCost(50));
         c2.getDescription = (_) => Utils.getMath(getDesc(c2.level));
         c2.getInfo = (amount) => Utils.getMathTo(getDesc(c2.level), getDesc(c2.level + amount));
     }
     // c3
     {
         let getDesc = (level) => "c_3=" + getC3(level).toString(0);
-        c3 = theory.createPermanentUpgrade(6, stars[2], new ConstantCost(10));
+        c3 = theory.createPermanentUpgrade(7, stars[2], new ConstantCost(10));
         c3.getDescription = (_) => Utils.getMath(getDesc(c3.level));
         c3.getInfo = (amount) => Utils.getMathTo(getDesc(c3.level), getDesc(c3.level + amount));
     }
     // c4
     {
         let getDesc = (level) => "c_4=" + getC4(level).toString(0);
-        c4 = theory.createPermanentUpgrade(7, stars[3], new ConstantCost(2));
+        c4 = theory.createPermanentUpgrade(8, stars[3], new ConstantCost(2));
         c4.getDescription = (_) => Utils.getMath(getDesc(c4.level));
         c4.getInfo = (amount) => Utils.getMathTo(getDesc(c4.level), getDesc(c4.level + amount));
     }
@@ -221,7 +244,15 @@ var getEquationOverlay = () => ui.createGrid({
         if (e.type != TouchType.PRESSED) return;
         if (stage == 0) {//might change stage later
             if (gacha < 1) return;
-            let multi = Math.min(gacha, 1);// + gachaBulk.level);
+            let multi = Math.min(gacha, gachaPullMax);
+
+            //modifies amount of pulls based off multi pull bonuses
+            let scale=Math.pow(10,Math.floor(Math.log10(multi)));//result is a form of 10eN  N being a positive whole number
+            let bonus = Math.floor(multi/scale)*Math.floor(scale/10);//multi being 900 gives 90 bonus is how this works
+            if (multi==gachaPullMax && multi>1){ multi+=1;}//10 pull gives 1 bonus, 100 gives 11 bonus, 1000 gives 111, etc with this line and the one below
+            multi+=bonus;
+
+
             let odds = [5, 4, 3, 2, 1, 0].map((x) => Math.pow(5 - .2,x));//gachaValue.level * .2, x));
             for (let n = 0; n < multi; n++) {
                 let osum = odds.reduce((x, y) => x + y);
