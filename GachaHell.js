@@ -34,7 +34,7 @@ var prgGacha = BigNumber.ZERO;
 
 var gacha = BigNumber.ZERO;
 var gachaTotal = BigNumber.ZERO;
-var stars =[0,0,0,0,0,0];
+var stars =new Array(6);
 var starNames =["⋆_1","⋆_2","⋆_3","⋆_4","⋆_5","⋆_6"];
 var starTotal=BigNumber.ZERO;
 
@@ -59,7 +59,7 @@ var setInternalState = (stateStr) =>
 
     let state = JSON.parse(stateStr);
     version = state.version ?? version
-    stars= state.stars ?? [0,0,0,0,0,0];
+    stars= state.stars ?? new Array(6);
     gacha =   BigNumber.fromBase64String(state.gacha) ?? BigNumber.ZERO;
     gachaTotal =  BigNumber.fromBase64String(state.gachaTotal) ?? BigNumber.ZERO;
 }
@@ -172,7 +172,7 @@ var tick = (elapsedTime, multiplier) => {
     let temp=BigNumber.ONE;//would be more optimal if i could get this to only update on tap
     for(let i=0; i<stars.length;i++)
     {
-        temp*=Math.pow((stars[i]+BigNumber.ONE), Math.sqrt(i+1));
+        temp*=Math.pow((stars[i].value+BigNumber.ONE), Math.sqrt(i+1));
     }
     starTotal=temp;
     
@@ -206,7 +206,7 @@ var getEquationOverlay = () => ui.createGrid({
                 let osum = odds.reduce((x, y) => x + y);
                 for (let a = 0; a < 6; a++) {
                     let rand = Math.random() < odds[a] / osum ? 1 : 0;
-                    stars[a] += rand * 1//(gachaValue2.level + 1);
+                    stars[a].value =stars[a].value + rand * 1//(gachaValue2.level + 1);
                     if (rand > 0) break;
                     osum -= odds[a];
                 }
@@ -271,12 +271,12 @@ var getQuaternaryEntries = () => {
         quaternaryEntries.push(new QuaternaryEntry("θ", null));
     }
 
-    quaternaryEntries[0].value = stars[0].toString();
-    quaternaryEntries[1].value = stars[1].toString();
-    quaternaryEntries[2].value = stars[2].toString();
-    quaternaryEntries[3].value = stars[3].toString();
-    quaternaryEntries[4].value = stars[4].toString();
-    quaternaryEntries[5].value = stars[5].toString();
+    quaternaryEntries[0].value = stars[0].value.toString();
+    quaternaryEntries[1].value = stars[1].value.toString();
+    quaternaryEntries[2].value = stars[2].value.toString();
+    quaternaryEntries[3].value = stars[3].value.toString();
+    quaternaryEntries[4].value = stars[4].value.toString();
+    quaternaryEntries[5].value = stars[5].value.toString();
     quaternaryEntries[6].value = starTotal.toString();
     quaternaryEntries[7].value = gacha.toString();
 
