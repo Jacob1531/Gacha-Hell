@@ -85,7 +85,7 @@ var postPublish = () => {
 
 var init = () => {
     currency = theory.createCurrency();
-    for (let i = 0; i < 9; i++) {
+    for (let i = 0; i < 6; i++) {
         stars[i] = theory.createCurrency(starNames[i], starNames[i]);
     }
 
