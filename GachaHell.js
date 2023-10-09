@@ -126,16 +126,13 @@ var init = () => {
         let getDesc = (level) => {
             switch(level) {
                 case 0:
-                    "New Multi-Pull Feature! Maximum 10 rolls per tap with 10 rolls giving 1 bonus roll!";
-                  break;
+                    return "New Multi-Pull Feature! Maximum 10 rolls per tap with 10 rolls giving 1 bonus roll!";
                 case 1:
-                    "Additional Multi-Pull Content! Massive 100 pull capabilities with an additional 1 roll for 100 rolls! (Total 11 bonus at 100)";
-                  break;
+                    return "Additional Multi-Pull Content! Massive 100 pull capabilities with an additional 1 roll for 100 rolls! (Total 11 bonus at 100)";
                 case 2:
-                    "Never-Before-Seen Multi-Pull DLC! Stupendous 1000 pull availability with a COOMPLETELY FREE 1 roll for 1000 rolls! (Total 111 bonus at 1000)";
-                  break;
+                    return "Never-Before-Seen Multi-Pull DLC! Stupendous 1000 pull availability with a COOMPLETELY FREE 1 roll for 1000 rolls! (Total 111 bonus at 1000)";
                 default:
-                    "Standard 10 times increase in pull capability increase with a bonus roll at "+Math.pow(10,1+pullAmount.level)+" rolls."
+                    return "Standard 10 times increase in pull capability increase with a bonus roll at "+Math.pow(10,1+pullAmount.level)+" rolls.";
               }
         };
         pullAmount = theory.createPermanentUpgrade(3, gacha, new ExponentialCost(100,Math.log2(10)));
