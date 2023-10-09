@@ -25,7 +25,7 @@ var stage=0;
 
 var time=0;
 var currency;
-var c1, c2; c3; c4;
+var c1, c2, c3, c4;
 var a;
 var pullAmount;
 var c1Exp, c2Exp;
