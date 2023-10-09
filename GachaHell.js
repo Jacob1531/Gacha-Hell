@@ -214,9 +214,9 @@ var init = () => {
     //// Story chapters
     chapter1 = theory.createStoryChapter(0, "My Second Chapter", "This is line 1 again,\nand this is line 2... again.\n\nNice again.", () => c2.level > 0);
     //multi pull chaps
-    chapter2 = theory.createStoryChapter(1, "The Glory of Multi-Pulls, Part I", "This is a line about why 10 pulls is better than 1,\nand this line is why bonus pulls are better.\n\nGacha.", () => pullAmount.level = 1);
-    chapter3 = theory.createStoryChapter(2, "The Glory of Multi-Pulls, Part II", "This is a line about why 10 pulls is better than 1,\nand this line is why bonus pulls are better.\n\nGacha.", () => pullAmount.level = 2);
-    chapter4 = theory.createStoryChapter(3, "The Glory of Multi-Pulls, Part III", "This is a line about why 10 pulls is better than 1,\nand this line is why bonus pulls are better.\n\nGacha.", () => pullAmount.level = 3);
+    chapter2 = theory.createStoryChapter(1, "The Glory of Multi-Pulls, Part I", "This is a line about why 10 pulls is better than 1,\nand this line is why bonus pulls are better.\n\nGacha.", () => pullAmount.level == 1);
+    chapter3 = theory.createStoryChapter(2, "The Glory of Multi-Pulls, Part II", "This is a line about why 10 pulls is better than 1,\nand this line is why bonus pulls are better.\n\nGacha.", () => pullAmount.level == 2);
+    chapter4 = theory.createStoryChapter(3, "The Glory of Multi-Pulls, Part III", "This is a line about why 10 pulls is better than 1,\nand this line is why bonus pulls are better.\n\nGacha.", () => pullAmount.level == 3);
 
     updateAvailability();
 }
