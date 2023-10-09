@@ -117,22 +117,22 @@ var init = () => {
 
     /////////////////////
     // Permanent Upgrades
-    theory.createPublicationUpgrade(0, currency, 1e10);
-    theory.createBuyAllUpgrade(1, currency, 1e13);
-    theory.createAutoBuyerUpgrade(2, currency, 1e30);
+    theory.createPublicationUpgrade(0, currency, 1e20);
+    theory.createBuyAllUpgrade(1, currency, 1e30);
+    theory.createAutoBuyerUpgrade(2, currency, 1e40);
 
     // Multi Pull
     {
         let getDesc = (level) => {
             switch(level) {
                 case 0:
-                    return "\text{New Multi-Pull Feature! Maximum 10 rolls per tap with 10 rolls giving 1 bonus roll!}";
+                    return "\\text{New Multi-Pull Feature! Maximum 10 rolls per tap with 10 rolls giving 1 bonus roll!}";
                 case 1:
-                    return "\text{Additional Multi-Pull Content! Massive 100 pull capabilities with an additional 1 roll for 100 rolls! (Total 11 bonus at 100)}";
+                    return "\\text{Additional Multi-Pull Content! Massive 100 pull capabilities with an additional 1 roll for 100 rolls! (Total 11 bonus at 100)}";
                 case 2:
-                    return "\text{Never-Before-Seen Multi-Pull DLC! Stupendous 1000 pull availability with a COOMPLETELY FREE 1 roll for 1000 rolls! (Total 111 bonus at 1000)}";
+                    return "\\text{Never-Before-Seen Multi-Pull DLC! Stupendous 1000 pull availability with a COOMPLETELY FREE 1 roll for 1000 rolls! (Total 111 bonus at 1000)}";
                 default:
-                    return "\text{Standard 10 times increase in pull capability increase with a bonus roll at }"+Math.pow(10,1+pullAmount.level)+"\text{ rolls.}";
+                    return "\\text{Standard 10 times increase in pull capability increase with a bonus roll at }"+Math.pow(10,1+pullAmount.level)+"\\text{ rolls.}";
               }
         };
         pullAmount = theory.createPermanentUpgrade(3, gacha, new ExponentialCost(100,Math.log2(10)));
@@ -251,8 +251,13 @@ var getEquationOverlay = () => ui.createGrid({
 
             //modifies amount of pulls based off multi pull bonuses
             let bonus = Math.floor(multi/10);
-            if (multi==gachaPullMax && multi>1){ multi+=1;}//10 pull gives 1 bonus, 100 gives 11 bonus, 1000 gives 111, etc with this line and the one below
-            multi+=bonus;
+            if (multi==gachaPullMax && multi>1)
+            { 
+                for (let i = 0; i<=Math.log10(bonus);i++)
+                {
+                    multi+=Math.pow(10,i);//10 pull gives 1 bonus, 100 gives 11 bonus, 1000 gives 111, etc with this line and the one below
+                }
+            }
 
 
             let odds = [5, 4, 3, 2, 1, 0].map((x) => Math.pow(5 - .2,x));//gachaValue.level * .2, x));
