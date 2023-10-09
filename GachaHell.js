@@ -314,7 +314,7 @@ var getPrimaryEquation = () => {
 var getSecondaryEquation = () => {
     return "⋆_t = \\prod\\nolimits_{i=1}^6\\left(1+⋆_i^{\\sqrt{i}}\\right)";
   }
-var getTertiaryEquation = () => theory.latexSymbol + "=\\max\\rho";
+var getTertiaryEquation = () => theory.latexSymbol + "=\\max\\rho^{0.1}";
 
 var getQuaternaryEntries = () => {
     if (quaternaryEntries.length == 0)
@@ -341,11 +341,9 @@ var getQuaternaryEntries = () => {
     return quaternaryEntries;
 }
 
-
-
 var getPublicationMultiplier = (tau) => tau.pow(0.164) / BigNumber.THREE;
 var getPublicationMultiplierFormula = (symbol) => "\\frac{{" + symbol + "}^{0.164}}{3}";
-var getTau = () => currency.value;
+var getTau = () => Math.pow(currency.value,0.1);//lower this, maybe tenth root
 var get2DGraphValue = () => currency.value.sign * (BigNumber.ONE + currency.value.abs()).log10().toNumber();
 
 //var getC1 = (level) => Utils.getStepwisePowerSum(level, 2, 10, 0);
