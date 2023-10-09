@@ -126,18 +126,36 @@ var init = () => {
         let getDesc = (level) => {
             switch(level) {
                 case 0:
-                    return "\\text{New Multi-Pull Feature! Maximum 10 rolls per tap with 10 rolls giving 1 bonus roll!}";
+                    return "\\text{New Multi-Pull Feature! Maximum 10 pulls per tap with 10 pulls giving 1 bonus pull!}";
                 case 1:
-                    return "\\text{Additional Multi-Pull Content! Massive 100 pull capabilities with an additional 1 roll for 100 rolls! (Total 11 bonus at 100)}";
+                    return "\\text{Additional Multi-Pull Content! Massive 100 pull capabilities with an additional 1 pull for 100 pulls! (Total 11 bonus at 100)}";
                 case 2:
-                    return "\\text{Never-Before-Seen Multi-Pull DLC! Stupendous 1000 pull availability with a COOMPLETELY FREE 1 roll for 1000 rolls! (Total 111 bonus at 1000)}";
+                    return "\\text{Never-Before-Seen Multi-Pull DLC! Stupendous 1000 pull availability with a COOMPLETELY FREE 1 pull for 1000 pulls! (Total 111 bonus at 1000)}";
                 default:
-                    return "\\text{Standard 10 times increase in pull capability increase with a bonus roll at }"+Math.pow(10,1+pullAmount.level)+"\\text{ rolls.}";
+                    return "\\text{Standard 10 times increase in pull capability increase with a bonus pull at }"+Math.pow(10,1+pullAmount.level)+"\\text{ pulls.}";
               }
         };
         pullAmount = theory.createPermanentUpgrade(3, gacha, new ExponentialCost(100,Math.log2(10)));
-        pullAmount.getDescription = (_) => Utils.getMath(getDesc(pullAmount.level));
-        pullAmount.getInfo = (amount) => Utils.getMathTo(getDesc(pullAmount.level), getDesc(pullAmount.level + amount));
+        pullAmount.getDescription = (_) => getDesc(pullAmount.level);
+        var bonuspulls="";
+        if(pullAmount.level>0) 
+        {
+            var temp="with ";
+            for( var i=0; i<pullAmount.level;i++)
+            {
+                temp+="1";
+            }
+            bonuspulls=temp+" max bonus pulls ";
+        }
+        pullAmount.getInfo = (amount) => {
+            var temp="with ";
+            for( var i=0; i<pullAmount.level+amount;i++)
+            {
+                temp+="1";
+            }
+            temp+=" max bonus pulls.";
+            return "Go from "+Math.pow(10,pullAmount.level)+" max pulls "+bonuspulls+"to "+Math.pow(10,pullAmount.level+amount)+" max pulls "+temp;
+        }
     }
 
     // c1
@@ -194,8 +212,11 @@ var init = () => {
 
     ///////////////////
     //// Story chapters
-    chapter1 = theory.createStoryChapter(0, "The Glory of Multi-Pulls", "This is a line about why 10 pulls is better than 1,\nand this line is why bonus pulls are better.\n\nGacha.", () => pullAmount.level > 0);
-    chapter2 = theory.createStoryChapter(1, "My Second Chapter", "This is line 1 again,\nand this is line 2... again.\n\nNice again.", () => c2.level > 0);
+    chapter2 = theory.createStoryChapter(0, "My Second Chapter", "This is line 1 again,\nand this is line 2... again.\n\nNice again.", () => c2.level > 0);
+    //multi pull chaps
+    chapter1 = theory.createStoryChapter(1, "The Glory of Multi-Pulls, Part I", "This is a line about why 10 pulls is better than 1,\nand this line is why bonus pulls are better.\n\nGacha.", () => pullAmount.level = 1);
+    chapter1 = theory.createStoryChapter(2, "The Glory of Multi-Pulls, Part II", "This is a line about why 10 pulls is better than 1,\nand this line is why bonus pulls are better.\n\nGacha.", () => pullAmount.level = 2);
+    chapter1 = theory.createStoryChapter(3, "The Glory of Multi-Pulls, Part III", "This is a line about why 10 pulls is better than 1,\nand this line is why bonus pulls are better.\n\nGacha.", () => pullAmount.level = 3);
 
     updateAvailability();
 }
