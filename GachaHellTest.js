@@ -315,12 +315,13 @@ var showGachaUpgPopup = (id) => {
                 stars[a] -= max;
                 if (stars[id] >= 1) {
                     if(a==1){
-
+                        //
                     }
                     else{
                         btns[a].opacity = 1;
                         btns[a].inputTransparent = false;
                     }
+                    
                     
                 } else {
                     btns[a].opacity = 0.5;
