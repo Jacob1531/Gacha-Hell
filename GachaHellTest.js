@@ -25,7 +25,8 @@ var stage=0;
 
 var time=0;
 var currency;
-var c1, c2, c3, c4;
+var c= BigNumber.ZERO;
+//var c1, c2, c3, c4;
 var a;
 var pullAmount;
 var c1Exp, c2Exp;
@@ -43,6 +44,8 @@ var starTotal=BigNumber.ZERO;
 
 var achievement1, achievement2;
 var chapter1, chapter2;
+
+var upgrades = [] //perm upgrades that cost gacha coins
 
 quaternaryEntries = [];
 
@@ -85,6 +88,22 @@ var postPublish = () => {
     //stars=[0,0,0,0,0,0];
     //var gacha = BigNumber.ZERO;
 }
+
+var upgData = [
+    {
+        name: (amount) => "⋆_1 Gacha",
+        info: (amount) => Localization.getUpgradeMultCustomInfo("text{c}", "{total}"),
+        latest: (result) => "Latest Pull: "+ result.toString(),
+        effect: (effect) => "Spend ⋆_1 to increase c",
+        total: BigNumber.ONE,
+        multiplier: 2,  
+        probabilities: [.9,.99],// method: latest=multiplier, if rand numb > .9, multiply multiplier by multiplier, same with .99.
+        starCost: new ConstantCost(250),
+    },
+]
+
+var getUpgradeEffect = (id) => upgData[id].effect(id);
+
 
 var init = () => {
     currency = theory.createCurrency();
@@ -159,10 +178,26 @@ var init = () => {
         }
     }
 
+    //creates shops for c variable using 1-5* as currency
+    for (let ud in upgData) { 
+        let data = upgData[ud];
+        upgrades[ud] = theory.createPermanentUpgrade(1000 + ud, currency, new FreeCost);//currency shouldnt matter because free
+        upgrades[ud].getDescription = data.name;
+        upgrades[ud].getInfo = () => {
+            let total = getSkillEffect(ud)
+            return data.info().replace("{total}", total instanceof BigNumber ? total.toString(0) : 
+                total.toLocaleString("en-US", { minimumFractionDigits: 0, maximumFractionDigits: 2 }));
+        }
+        upgrades[ud].bought = (amount) => {
+            if (!isPopupOpen) showSkillPopup(ud);
+        }
+    }
+/*
     // c1
     {
         let getDesc = (level) => "c_1=" + getC1(level).toString(0);
         c1 = theory.createPermanentUpgrade(4, stars[0], new ConstantCost(250));
+        upgrade.bought = (amount) => createSomeMenu().show()
         c1.getDescription = (_) => Utils.getMath(getDesc(c1.level));
         c1.getInfo = (amount) => Utils.getMathTo(getDesc(c1.level), getDesc(c1.level + amount));
     }
@@ -186,13 +221,13 @@ var init = () => {
         c4 = theory.createPermanentUpgrade(7, stars[3], new ConstantCost(2));
         c4.getDescription = (_) => Utils.getMath(getDesc(c4.level));
         c4.getInfo = (amount) => Utils.getMathTo(getDesc(c4.level), getDesc(c4.level + amount));
-    }
+    }*/
 
     ///////////////////////
     //// Milestone Upgrades
     theory.setMilestoneCost(new LinearCost(25, 25));
 
-    {
+    /*{
         c1Exp = theory.createMilestoneUpgrade(0, 3);
         c1Exp.description = Localization.getUpgradeIncCustomExpDesc("c_1", "0.05");
         c1Exp.info = Localization.getUpgradeIncCustomExpInfo("c_1", "0.05");
@@ -204,16 +239,16 @@ var init = () => {
         c2Exp.description = Localization.getUpgradeIncCustomExpDesc("c_2", "0.05");
         c2Exp.info = Localization.getUpgradeIncCustomExpInfo("c_2", "0.05");
         c2Exp.boughtOrRefunded = (_) => theory.invalidatePrimaryEquation();
-    }
+    }*/
     
     /////////////////
     //// Achievements
-    achievement1 = theory.createAchievement(0, "Achievement 1", "Description 1", () => c1.level > 1);
-    achievement2 = theory.createSecretAchievement(1, "Achievement 2", "Description 2", "Maybe you should buy two levels of c2?", () => c2.level > 1);
+    //achievement1 = theory.createAchievement(0, "Achievement 1", "Description 1", () => c1.level > 1);
+    //achievement2 = theory.createSecretAchievement(1, "Achievement 2", "Description 2", "Maybe you should buy two levels of c2?", () => c2.level > 1);
 
     ///////////////////
     //// Story chapters
-    chapter1 = theory.createStoryChapter(0, "My Second Chapter", "This is line 1 again,\nand this is line 2... again.\n\nNice again.", () => c2.level > 0);
+    //chapter1 = theory.createStoryChapter(0, "My Second Chapter", "This is line 1 again,\nand this is line 2... again.\n\nNice again.", () => c2.level > 0);
     //multi pull chaps
     chapter2 = theory.createStoryChapter(1, "The Glory of Multi-Pulls, Part I", "You have unlocked,\nand this line is why bonus pulls are better.\n\nGacha.", () => pullAmount.level == 1);
     chapter3 = theory.createStoryChapter(2, "The Glory of Multi-Pulls, Part II", "This is a line about why 10 pulls is better than 1,\nand this line is why bonus pulls are better.\n\nGacha.", () => pullAmount.level == 2);
@@ -225,15 +260,13 @@ var init = () => {
 var isCurrencyVisible = (index) =>!index;
 
 var updateAvailability = () => {
-    c2Exp.isAvailable = c1Exp.level > 0;
+    //c2Exp.isAvailable = c1Exp.level > 0;
 }
 
 var tick = (elapsedTime, multiplier) => {
     let dt = BigNumber.from(elapsedTime * multiplier);
     let bonus = theory.publicationMultiplier;
-    currency.value += dt * bonus * getA(a.level) * getC1(c1.level).pow(getC1Exponent(c1Exp.level)) *
-                                   getC2(c2.level).pow(getC2Exponent(c2Exp.level)) * getC3(c3.level) *
-                                   getC4(c4.level) * starTotal;
+    currency.value += dt * bonus * getA(a.level) * getC(c) * starTotal;
 
     let temp=BigNumber.ONE;//would be more optimal if i could get this to only update on tap
     for(let i=0; i<stars.length;i++)
@@ -255,7 +288,62 @@ var tick = (elapsedTime, multiplier) => {
     theory.invalidateQuaternaryValues();
 }
 
+var showGachaUpgPopup = (id) => {
+    let upg = upgData[id];
 
+    let upgInfoText = ui.createLatexLabel({ text: upgs[id].getInfo(), horizontalTextAlignment: TextAlignment.CENTER, margin: new Thickness(0, 10, 0, 6) });
+
+    
+    /*let bulkText = ui.createLatexLabel({
+        text: Number.isFinite(upgBulk) ? Localization.get("BuyablesCostN", upgBulk) : Localization.get("BuyablesCostMax"),
+        horizontalOptions: LayoutOptions.END_AND_EXPAND, horizontalTextAlignment: TextAlignment.END,
+    });*/
+
+    let btns = [null, null];//0 idx will be 1x and 1 idx will be 10x but slightly cheaper than 1x ten times
+    for (let a = 0; a < 2; a++) {
+        btns[a]=ui.createButton({//update stuff below
+            text: "★" + "₁₂₃₄"[id] + " → +" + skill.starValue[a], 
+            row: 0,
+            column: a % 2, 
+            opacity: stars[id] >= 1 ? 1 : 0.5,
+            inputTransparent: stars[id] >= 1 ? false : true,
+            onClicked: () => {
+                if (stars[id] < 1) return;
+                let max = skillData[id].maxLevel ? Math.ceil((skill.starCost.getSum(skills[id].level, skill.maxLevel) - skillExp[id]) / skill.starValue[a]) : Infinity;
+                max = Math.min(stars[a], max + 1, skillBulk);
+                addSkillExp(id, skill.starValue[a] * max);
+                stars[a] -= max;
+                if (stars[id] >= 1) {
+                    if(a==1){
+
+                    }
+                    else{
+                        btns[a].opacity = 1;
+                        btns[a].inputTransparent = false;
+                    }
+                    
+                } else {
+                    btns[a].opacity = 0.5;
+                    btns[a].inputTransparent = true;
+                }
+                skillInfoText.text = skills[id].getInfo();
+                levelText.text = "Level: " + skills[id].level;
+                expText.text = (skillExp[id].toFixed(0) + " / " + skill.starCost.getCost(skills[id].level).toString(0));
+                expBar.progress = skillExp[id] / skill.starCost.getCost(skills[id].level).toNumber();
+    
+                if (skills[id].maxLevel && skills[id].level >= skills[id].maxLevel)
+                    popup.hide();
+    
+                theory.invalidateQuaternaryValues();
+            }
+        })
+    }
+    
+
+
+
+    //need to create buttons for each upgrade, refer to line 1950ish in prob ct code
+}
 
 var getEquationOverlay = () => ui.createGrid({
     margin: new Thickness(40, 0, 40, 0),
@@ -319,7 +407,7 @@ var getEquationOverlay = () => ui.createGrid({
 //  \, - a thin space
 
 var getPrimaryEquation = () => {
-    let result = "\\dot{\\rho} = ac_1";
+    /*let result = "\\dot{\\rho} = ac_1";
 
     if (c1Exp.level == 1) result += "^{1.05}";
     if (c1Exp.level == 2) result += "^{1.1}";
@@ -331,7 +419,8 @@ var getPrimaryEquation = () => {
     if (c2Exp.level == 2) result += "^{1.1}";
     if (c2Exp.level == 3) result += "^{1.15}";
 
-    result += "c_3c_4⋆_t"
+    result += "c_3c_4⋆_t"*/
+    let result="\\dot{\\rho} = ac⋆_t";
     theory.primaryEquationScale = 1;
     return result;
 }
@@ -353,6 +442,7 @@ var getQuaternaryEntries = () => {
         quaternaryEntries.push(new QuaternaryEntry("⋆_6", null));
         quaternaryEntries.push(new QuaternaryEntry("⋆_t", null));
         quaternaryEntries.push(new QuaternaryEntry("θ", null));
+        //Maybe i need to add c or each individual multiplier here.
     }
 
     quaternaryEntries[0].value = stars[0].value.toString();
@@ -381,5 +471,6 @@ var getA = (level) => Utils.getStepwisePowerSum(level, 2, 10, 0);
 var getPullMax = (level) => BigNumber.TEN.pow(level);
 var getC1Exponent = (level) => BigNumber.from(1 + 0.05 * level);
 var getC2Exponent = (level) => BigNumber.from(1 + 0.05 * level);
+var getC = (c) =>  c;
 
 init();
